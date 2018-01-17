@@ -19,7 +19,7 @@ namespace TestProject
             public DateTime DateEnd { get; set; }
             public string Discribe { get; set; }
 
-            public Task(string name, DateTime dateStart, DateTime dateEnd, string discribe, int id )
+            public Task(string name, DateTime dateStart, DateTime dateEnd, string discribe, int id)
             {
                 Name = name;
                 DateStart = dateStart;
@@ -35,6 +35,60 @@ namespace TestProject
             }
 
         }
+
+        [Serializable]
+        class TaskSaver
+        {
+            public List<Task> Tasks { get; set; }
+            string FileName { get; set; }
+
+            public TaskSaver(List<Task> tasks, string fileName)
+            {
+                Tasks = tasks;
+                FileName = Directory.GetCurrentDirectory() + "/" + fileName;
+            }
+
+            public void SaveToFile()
+            {
+                BinaryFormatter format = new BinaryFormatter();
+                using (FileStream fs = new FileStream(FileName, FileMode.OpenOrCreate))
+                {
+                    format.Serialize(fs, Tasks);
+                    Console.WriteLine("Список сохранён");
+                }
+            }
+            public List<Task> LoadFromFile()
+            {
+                Tasks.Clear();
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream fs = new FileStream(FileName, FileMode.Open))
+                {
+                    return (List<Task>)formatter.Deserialize(fs);
+
+                }
+            }
+
+            public int GetLastId()
+            {
+                try
+                {
+                    return Tasks.Last().Id;
+                }
+                catch (System.InvalidOperationException e)
+                {
+                    if (e.Source!=null)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return Tasks.Last().Id;
+                    }
+                }
+            }
+        }
+    
+
         
         static void Main(string[] args)
         {
@@ -85,34 +139,15 @@ namespace TestProject
                 Console.WriteLine("Введите описание к задаче");
                 string discribe = Console.ReadLine();
                 Task newTask = new Task(name, dateStart, dateEnd, discribe, taskId);
+        
                 task.Add(newTask);
                 
             }
-            void SaveListToFile(List<Task> task)
-            {
-                BinaryFormatter format = new BinaryFormatter();
-                string path = Directory.GetCurrentDirectory();
-                path = path + "/";
-                using (FileStream fs = new FileStream(path + "inf.dat", FileMode.OpenOrCreate))
-                {
-                    format.Serialize(fs, task);
-                    Console.WriteLine("Список сохранён");
-                }
-            }
-            List<Task>  LoadListFromFile(List<Task> task)
-            {
-                task.Clear();
-                BinaryFormatter format = new BinaryFormatter();
-                string path = Directory.GetCurrentDirectory();
-                path = path + "/";
-                using (FileStream fs = new FileStream(path  + "inf.dat", FileMode.Open))
-                {
-                    return (List<Task>)format.Deserialize(fs);
-                    
-                }
-            }
+            
+            
             int id = 1;
             List<Task> tasks = new List<Task>();
+            TaskSaver ts = new TaskSaver(tasks, "inf.dat");
             char c=' ';
             while (c!='*')
                 {
@@ -264,12 +299,15 @@ namespace TestProject
 
                     case '5':
                         Console.Clear();
-                        SaveListToFile(tasks);
+                        ts.Tasks = tasks;
+                        ts.SaveToFile();
                         break;
 
                     case '6':
                         Console.Clear();
-                        tasks =  LoadListFromFile(tasks);
+                        tasks = ts.LoadFromFile();
+                        ts.Tasks = tasks;
+                        id = ts.GetLastId()+1;
                         break;
 
                 }
