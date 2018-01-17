@@ -47,14 +47,41 @@ namespace TestProject
                 string day = Console.ReadLine();
                 string month = Console.ReadLine();
                 string year = Console.ReadLine();
-                DateTime dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), 
-                    Convert.ToInt16(day));
+                DateTime dateStart = new DateTime();
+                try
+                {
+                    dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                        Convert.ToInt16(day));
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    if (e.Source!=null)
+                    {
+                        Console.WriteLine("Проверьте вводимые данные");
+                        Console.ReadLine();
+                        return;
+                    }
+                }
                 Console.WriteLine("Введите дату завершения выполнения задачи в формате дд мм гггг");
                 day = Console.ReadLine();
                 month = Console.ReadLine();
                 year = Console.ReadLine();
-                DateTime dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), 
-                    Convert.ToInt16(day));
+                DateTime dateEnd = new DateTime();
+                try
+                {
+                    dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                        Convert.ToInt16(day));
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    if (e.Source != null)
+                    {
+                        Console.WriteLine("Проверьте вводимые данные");
+                        Console.ReadLine();
+                        return;
+                    }
+                }
+            
                 Console.WriteLine("Введите описание к задаче");
                 string discribe = Console.ReadLine();
                 Task newTask = new Task(name, dateStart, dateEnd, discribe, taskId);
@@ -97,6 +124,7 @@ namespace TestProject
                 Console.WriteLine("4 - Удалить задачу");
                 Console.WriteLine("5 - Сохранить список задач в файл");
                 Console.WriteLine("6 - Загрузить список из файла");
+                Console.WriteLine("* - Выйти из программы");
                 try { 
                 c = Convert.ToChar(Console.ReadLine());
                 }
@@ -114,34 +142,12 @@ namespace TestProject
                         foreach (Task task in tasks )
                         {
                             Console.WriteLine("------------------");
-                            /*Console.WriteLine("Номер: " + task.Id);
-                            Console.WriteLine("Название: " + task.Name);
-                            Console.WriteLine("Дата начала: " + task.DateStart);
-                            Console.WriteLine("Дата окончания: " + task.DateEnd);
-                            Console.WriteLine("Описание: " + task.Discribe);*/
                             Console.WriteLine(task);
                         }
                         Console.ReadLine();
                         break;
                     case '2':
                         Console.Clear();
-                        /* Console.WriteLine("Введите название задачи:");
-                         string name = Console.ReadLine();
-                         Console.WriteLine("Введите дату начала выполнения задачи в формате дд мм гггг");
-                         string day = Console.ReadLine();
-                         string month = Console.ReadLine();
-                         string year = Console.ReadLine();
-                         DateTime dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), Convert.ToInt16(day));
-                         Console.WriteLine("Введите дату завершения выполнения задачи в формате дд мм гггг");
-                         day = Console.ReadLine();
-                         month = Console.ReadLine();
-                         year = Console.ReadLine();
-                         DateTime dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), Convert.ToInt16(day));
-                         Console.WriteLine("Введите описание к задаче");
-                         string discribe = Console.ReadLine();
-                         Task newTask = new Task(name, dateStart, dateEnd, discribe, id);
-                         tasks.Add(newTask);
-                         id += 1;*/
                         AddTask(tasks, id);
                         id += 1;
                         break;
@@ -162,6 +168,7 @@ namespace TestProject
                                     Console.WriteLine("2 - Дата начала");
                                     Console.WriteLine("3 - Дата окончания");
                                     Console.WriteLine("4 - Описание");
+                                    Console.WriteLine("5 - Выход в главное меню");
                                     try
                                     {
                                         s = Convert.ToChar(Console.ReadLine());
@@ -187,8 +194,21 @@ namespace TestProject
                                             string day = Console.ReadLine();
                                             string month = Console.ReadLine();
                                             string year = Console.ReadLine();
-                                            DateTime dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), 
-                                                Convert.ToInt16(day));
+                                            DateTime dateStart = new DateTime;
+                                            try
+                                            {
+                                                dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                                                    Convert.ToInt16(day));
+                                            }
+                                            catch (System.ArgumentOutOfRangeException e)
+                                            {
+                                                if (e.Source != null)
+                                                {
+                                                    Console.WriteLine("Проверьте вводимые данные");
+                                                    Console.ReadLine();
+                                                    return;
+                                                }
+                                            }
                                             task.DateStart = dateStart;
                                             break;
 
@@ -198,8 +218,21 @@ namespace TestProject
                                             day = Console.ReadLine();
                                             month = Console.ReadLine();
                                             year = Console.ReadLine();
-                                            DateTime dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
-                                                Convert.ToInt16(day));
+                                            DateTime dateEnd = new DateTime;
+                                            try
+                                            {
+                                                dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                                                    Convert.ToInt16(day));
+                                            }
+                                            catch (System.ArgumentOutOfRangeException e)
+                                            {
+                                                if (e.Source != null)
+                                                {
+                                                    Console.WriteLine("Проверьте вводимые данные");
+                                                    Console.ReadLine();
+                                                    return;
+                                                }
+                                            }
                                             task.DateEnd = dateEnd;
                                             break;
 
