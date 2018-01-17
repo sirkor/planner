@@ -194,7 +194,7 @@ namespace TestProject
                                             string day = Console.ReadLine();
                                             string month = Console.ReadLine();
                                             string year = Console.ReadLine();
-                                            DateTime dateStart = new DateTime;
+                                            DateTime dateStart = new DateTime();
                                             try
                                             {
                                                 dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
@@ -218,7 +218,7 @@ namespace TestProject
                                             day = Console.ReadLine();
                                             month = Console.ReadLine();
                                             year = Console.ReadLine();
-                                            DateTime dateEnd = new DateTime;
+                                            DateTime dateEnd = new DateTime();
                                             try
                                             {
                                                 dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
