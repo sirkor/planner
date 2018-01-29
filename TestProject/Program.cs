@@ -10,6 +10,189 @@ namespace TestProject
 {
     class Program
     {
+         interface ITaskManager
+        {
+            List<Task> Tasks { get; set; }
+            void AddTask();
+            void DelTask(int id);
+            void EditTask(int id);
+        }
+
+        class TaskManager : ITaskManager
+        {
+            public List<Task> Tasks { get; set; }
+            public int LastId { get; set; }
+            public TaskManager(List<Task> lst)
+            {
+                Tasks = lst;
+                if(Tasks.Count > 0)
+                {
+                    LastId = Tasks.Last().Id;
+                }
+                else
+                {
+                    LastId = 0;
+                }
+                
+            }
+
+            public void AddTask()
+            {
+                Console.Clear();
+                Console.WriteLine("Введите название задачи:");
+                string name = Console.ReadLine();
+                Console.WriteLine("Введите дату начала выполнения задачи в формате дд мм гггг");
+                string day = Console.ReadLine();
+                string month = Console.ReadLine();
+                string year = Console.ReadLine();
+                DateTime dateStart = new DateTime();
+                try
+                {
+                    dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                        Convert.ToInt16(day));
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    if (e.Source != null)
+                    {
+                        Console.WriteLine("Проверьте вводимые данные");
+                        Console.ReadLine();
+                        return;
+                    }
+                }
+                Console.WriteLine("Введите дату завершения выполнения задачи в формате дд мм гггг");
+                day = Console.ReadLine();
+                month = Console.ReadLine();
+                year = Console.ReadLine();
+                DateTime dateEnd = new DateTime();
+                try
+                {
+                    dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                        Convert.ToInt16(day));
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    if (e.Source != null)
+                    {
+                        Console.WriteLine("Проверьте вводимые данные");
+                        Console.ReadLine();
+                        return;
+                    }
+                }
+
+                Console.WriteLine("Введите описание к задаче");
+                string discribe = Console.ReadLine();
+                LastId += 1;
+                Task newTask = new Task(name, dateStart, dateEnd, discribe, LastId);
+                Tasks.Add(newTask);
+            }
+            public void DelTask( int id)
+            {
+                foreach (Task task in Tasks)
+                {
+                    if (task.Id == id)
+                    {
+                        Tasks.Remove(task);
+                        Console.WriteLine("Задача была удалена");
+                        break;
+                    }
+                }
+            }
+            public void EditTask(int id)
+            {
+                foreach (Task task in Tasks)
+                {
+                    if (id == task.Id)
+                    {
+                        char s = ' ';
+                        while (s != '*')
+                        {
+                            Console.WriteLine("Выберите пункт для редактирования:");
+                            Console.WriteLine("1 - Название");
+                            Console.WriteLine("2 - Дата начала");
+                            Console.WriteLine("3 - Дата окончания");
+                            Console.WriteLine("4 - Описание");
+                            Console.WriteLine("* - Выход в главное меню");
+                            try
+                            {
+                                s = Convert.ToChar(Console.ReadLine());
+                            }
+                            catch (System.FormatException e)
+                            {
+                                if (e.Source != null)
+                                {
+                                    Console.WriteLine("Неверный формат данных");
+                                }
+                            }
+                            switch (s)
+                            {
+                                case '1':
+                                    Console.Clear();
+                                    Console.WriteLine("Введите новое название");
+                                    task.Name = Console.ReadLine();
+                                    break;
+
+                                case '2':
+                                    Console.Clear();
+                                    Console.WriteLine("Введите новую дату начала");
+                                    string day = Console.ReadLine();
+                                    string month = Console.ReadLine();
+                                    string year = Console.ReadLine();
+                                    DateTime dateStart = new DateTime();
+                                    try
+                                    {
+                                        dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                                            Convert.ToInt16(day));
+                                    }
+                                    catch (System.ArgumentOutOfRangeException e)
+                                    {
+                                        if (e.Source != null)
+                                        {
+                                            Console.WriteLine("Проверьте вводимые данные");
+                                            Console.ReadLine();
+                                            return;
+                                        }
+                                    }
+                                    task.DateStart = dateStart;
+                                    break;
+
+                                case '3':
+                                    Console.Clear();
+                                    Console.WriteLine("Введите новую дату окончания");
+                                    day = Console.ReadLine();
+                                    month = Console.ReadLine();
+                                    year = Console.ReadLine();
+                                    DateTime dateEnd = new DateTime();
+                                    try
+                                    {
+                                        dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
+                                            Convert.ToInt16(day));
+                                    }
+                                    catch (System.ArgumentOutOfRangeException e)
+                                    {
+                                        if (e.Source != null)
+                                        {
+                                            Console.WriteLine("Проверьте вводимые данные");
+                                            Console.ReadLine();
+                                            return;
+                                        }
+                                    }
+                                    task.DateEnd = dateEnd;
+                                    break;
+
+                                case '4':
+                                    Console.Clear();
+                                    Console.WriteLine("Введите новое описание");
+                                    task.Discribe = Console.ReadLine();
+                                    break;
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+
         [Serializable]
         class Task
         {
@@ -87,67 +270,20 @@ namespace TestProject
                 }
             }
         }
+        
+
     
 
         
         static void Main(string[] args)
         {
-            void AddTask(List<Task> task, int taskId)
-            {
-                Console.Clear();
-                Console.WriteLine("Введите название задачи:");
-                string name = Console.ReadLine();
-                Console.WriteLine("Введите дату начала выполнения задачи в формате дд мм гггг");
-                string day = Console.ReadLine();
-                string month = Console.ReadLine();
-                string year = Console.ReadLine();
-                DateTime dateStart = new DateTime();
-                try
-                {
-                    dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
-                        Convert.ToInt16(day));
-                }
-                catch (System.ArgumentOutOfRangeException e)
-                {
-                    if (e.Source!=null)
-                    {
-                        Console.WriteLine("Проверьте вводимые данные");
-                        Console.ReadLine();
-                        return;
-                    }
-                }
-                Console.WriteLine("Введите дату завершения выполнения задачи в формате дд мм гггг");
-                day = Console.ReadLine();
-                month = Console.ReadLine();
-                year = Console.ReadLine();
-                DateTime dateEnd = new DateTime();
-                try
-                {
-                    dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
-                        Convert.ToInt16(day));
-                }
-                catch (System.ArgumentOutOfRangeException e)
-                {
-                    if (e.Source != null)
-                    {
-                        Console.WriteLine("Проверьте вводимые данные");
-                        Console.ReadLine();
-                        return;
-                    }
-                }
-            
-                Console.WriteLine("Введите описание к задаче");
-                string discribe = Console.ReadLine();
-                Task newTask = new Task(name, dateStart, dateEnd, discribe, taskId);
-        
-                task.Add(newTask);
-                
-            }
+           
             
             
-            int id = 1;
+          
             List<Task> tasks = new List<Task>();
-            TaskSaver ts = new TaskSaver(tasks, "inf.dat");
+            TaskManager TManager = new TaskManager(tasks); 
+            TaskSaver ts = new TaskSaver(TManager.Tasks, "inf.dat");
             char c=' ';
             while (c!='*')
                 {
@@ -174,7 +310,7 @@ namespace TestProject
                 {
                     case '1':
                         Console.Clear();
-                        foreach (Task task in tasks )
+                        foreach (Task task in TManager.Tasks )
                         {
                             Console.WriteLine("------------------");
                             Console.WriteLine(task);
@@ -183,133 +319,34 @@ namespace TestProject
                         break;
                     case '2':
                         Console.Clear();
-                        AddTask(tasks, id);
-                        id += 1;
+                        TManager.AddTask();
                         break;
 
                     case '3':
                         Console.Clear();
-                        Console.WriteLine("Введите номер удаляемого элемента:");
+                        Console.WriteLine("Введите номер изменяемого элемента:");
                         int editNum = Convert.ToInt32(Console.ReadLine());
-                        foreach (Task task in tasks)
-                        {
-                            if(editNum == task.Id)
-                            {
-                                char s = ' ';
-                                while (s != '*')
-                                { 
-                                    Console.WriteLine("Выберите пункт для редактирования:");
-                                    Console.WriteLine("1 - Название");
-                                    Console.WriteLine("2 - Дата начала");
-                                    Console.WriteLine("3 - Дата окончания");
-                                    Console.WriteLine("4 - Описание");
-                                    Console.WriteLine("5 - Выход в главное меню");
-                                    try
-                                    {
-                                        s = Convert.ToChar(Console.ReadLine());
-                                    }
-                                    catch (System.FormatException e)
-                                    {
-                                        if (e.Source!=null)
-                                        {
-                                            Console.WriteLine("Неверный формат данных");
-                                        }
-                                    }
-                                    switch(s)
-                                    {
-                                        case '1':
-                                            Console.Clear();
-                                            Console.WriteLine("Введите новое название");
-                                            task.Name = Console.ReadLine();
-                                            break;
-
-                                        case '2':
-                                            Console.Clear();
-                                            Console.WriteLine("Введите новую дату начала");
-                                            string day = Console.ReadLine();
-                                            string month = Console.ReadLine();
-                                            string year = Console.ReadLine();
-                                            DateTime dateStart = new DateTime();
-                                            try
-                                            {
-                                                dateStart = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
-                                                    Convert.ToInt16(day));
-                                            }
-                                            catch (System.ArgumentOutOfRangeException e)
-                                            {
-                                                if (e.Source != null)
-                                                {
-                                                    Console.WriteLine("Проверьте вводимые данные");
-                                                    Console.ReadLine();
-                                                    return;
-                                                }
-                                            }
-                                            task.DateStart = dateStart;
-                                            break;
-
-                                        case '3':
-                                            Console.Clear();
-                                            Console.WriteLine("Введите новую дату окончания");
-                                            day = Console.ReadLine();
-                                            month = Console.ReadLine();
-                                            year = Console.ReadLine();
-                                            DateTime dateEnd = new DateTime();
-                                            try
-                                            {
-                                                dateEnd = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month),
-                                                    Convert.ToInt16(day));
-                                            }
-                                            catch (System.ArgumentOutOfRangeException e)
-                                            {
-                                                if (e.Source != null)
-                                                {
-                                                    Console.WriteLine("Проверьте вводимые данные");
-                                                    Console.ReadLine();
-                                                    return;
-                                                }
-                                            }
-                                            task.DateEnd = dateEnd;
-                                            break;
-
-                                        case '4':
-                                            Console.Clear();
-                                            Console.WriteLine("Введите новое описание");
-                                            task.Discribe = Console.ReadLine();
-                                            break;
-                                    }
-                                }
-                            }
-                        }
+                        TManager.EditTask(editNum);
                         break;
 
                     case '4':
                         Console.Clear();
                         Console.WriteLine("Введите номер удаляемого элемента:");
                         int delNum = Convert.ToInt16(Console.ReadLine());
-                        foreach (Task task in tasks)
-                        {
-                            if (task.Id==delNum)
-                            {
-                                tasks.Remove(task);
-                                Console.WriteLine("Задача была удалена");
-                                break;
-                            }
-                        }
+                        TManager.DelTask(delNum);
                         break;
 
                     case '5':
                         Console.Clear();
-                        ts.Tasks = tasks;
+                        ts.Tasks = TManager.Tasks;
                         ts.SaveToFile();
                         break;
 
                     case '6':
                         Console.Clear();
-                        tasks = ts.LoadFromFile();
-                        ts.Tasks = tasks;
-                        id = ts.GetLastId()+1;
+                        TManager.Tasks = ts.LoadFromFile();
+                        TManager.LastId = TManager.Tasks.Last().Id;
                         break;
-
                 }
             }
         }
